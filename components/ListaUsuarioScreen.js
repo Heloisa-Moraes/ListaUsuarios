@@ -1,61 +1,70 @@
-import React, { useState } from 'react';
-import {
-  FlatList,
-  View,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import { List } from 'react-native-paper';
-
+import React from 'react';
+import { FlatList, View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import Usuarios from '../Data/Usuarios';
 
-export default props => {
-
-const Item = ({elemento: item }) => {
-  return(
-  <List.Item
-    title={item.titulo}
-    description={item.descricao}
-    // left={props => <List.Icon {...props} icon="folder" />}
-    left={props => 
-    <Image {...props} style={styles.tinyLogo} 
-    source={{uri: item.urlImagem}}/>
-}
-  onPress={() => props.navigation.navigate("De", {id: item.id})}
-/>
-)};
-
+export default function ListaUsuarioScreen({ navigation }) {
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate('DetalhesUsuario', { id: item.id, backgroundColor: item.cor })}>
+        <View style={[styles.item, { backgroundColor: item.cor }]}>
+          <Image 
+            source={{ uri: item.urlImagem || 'link_do_placeholder_aqui' }} 
+            style={styles.image} 
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{item.titulo}</Text>
+            <Text style={styles.name}>{item.nome}</Text>
+            <Text style={styles.email}>{item.email}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={ Usuarios }
-        renderItem={({ item }) =><Item elemento={item} />}
-        keyExtractor={ item => item.id }
-      />
-    </View>
+    <FlatList
+      data={Usuarios}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+    />
   );
 }
 
-// APP 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-  },
   item: {
-    padding: 20,
+    flexDirection: 'row',
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    elevation: 1, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
-  title: {
-    fontSize: 32,
-  },
-  tinyLogo: {
+  image: {
     width: 50,
     height: 50,
+    marginRight: 10,
+    borderRadius: 25,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'normal',
+  },
+  email: {
+    fontSize: 14,
+    color: 'gray',
   },
 });
